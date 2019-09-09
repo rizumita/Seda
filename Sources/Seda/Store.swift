@@ -6,8 +6,11 @@
 //
 
 import Foundation
-import Combine
+#if canImport(Combine)
+    import Combine
+#endif
 
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 public class Store<S>: ObservableObject where S: StateType {
     public var objectWillChange = PassthroughSubject<S, Never>()
     private var parent: AnyStore?
