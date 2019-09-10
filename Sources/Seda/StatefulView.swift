@@ -10,9 +10,11 @@ import Foundation
 import SwiftUI
 #endif
 
+#if swift(>=5.1)
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 public protocol StatefulView where Self: View {
     associatedtype S: StateType
 
     var store: Store<S> { get }
 }
+#endif

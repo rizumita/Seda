@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 #endif
 
+#if swift(>=5.1)
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 extension Store {
     public func binding<Value>(_ actionable: @escaping (Value) -> ActionType,
@@ -22,3 +23,4 @@ extension Store {
         })
     }
 }
+#endif
