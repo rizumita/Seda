@@ -8,7 +8,6 @@
 import Foundation
 #if canImport(Combine)
 import Combine
-#endif
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 public class Store<S>: ObservableObject where S: StateType {
@@ -64,3 +63,5 @@ struct AnyStore {
         self.dispatch = store.dispatch
     }
 }
+
+#endif
