@@ -6,7 +6,9 @@
 //
 
 import Foundation
+#if canImport(Combine)
 import SwiftUI
+#endif
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 public protocol StatefulView where Self: View {

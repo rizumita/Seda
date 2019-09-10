@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 #if canImport(Combine)
 import Combine
 #endif
@@ -18,16 +17,16 @@ public class Store<S>: ObservableObject where S: StateType {
     private var cancellables = Set<AnyCancellable>()
     
     private let reducer: Reducer<S>
-    @Published public var state: S {
+    @Published public private(set) var state: S {
         willSet {
-            DispatchQueue.main.sync {
-                objectWillChange.send(state)
+            DispatchQueue.main.async {
+                self.objectWillChange.send(self.state)
             }
         }
     }
     private let queue: DispatchQueue
     
-    public init(reducer: @escaping Reducer<S>, state: S, queue: DispatchQueue = DispatchQueue(label: "Store.queue")) {
+    public init(reducer: @escaping Reducer<S>, state: S, queue: DispatchQueue = DispatchQueue(label: "Seda.Store.queue")) {
         self.reducer = reducer
         self.state = state
         self.queue = queue
@@ -54,16 +53,6 @@ public class Store<S>: ObservableObject where S: StateType {
         }.store(in: &cancellables)
         
         return result
-    }
-    
-    public func binding<Value>(_ actionable: @escaping (Value) -> ActionType,
-                               _ keyPath: KeyPath<S, Value>) -> Binding<Value> {
-        Binding(get: { [weak self] in
-            guard let this = self else { fatalError() }
-            return this.state[keyPath: keyPath]
-            }, set: { [weak self] value in
-                self?.dispatch(actionable(value))
-        })
     }
 }
 
