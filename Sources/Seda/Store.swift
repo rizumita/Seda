@@ -8,7 +8,9 @@
 import Foundation
 #if canImport(Combine)
 import Combine
+#endif
 
+#if swift(>=5.1)
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 public class Store<S>: ObservableObject where S: StateType {
     public var objectWillChange = PassthroughSubject<S, Never>()
@@ -63,5 +65,4 @@ struct AnyStore {
         self.dispatch = store.dispatch
     }
 }
-
 #endif
