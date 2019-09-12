@@ -7,7 +7,7 @@
 
 import Foundation
 
-public typealias Dispatch = (ActionType) -> ()
+public typealias Dispatch = (BaseActionType) -> ()
 public typealias Sub = (@escaping Dispatch) -> ()
 
 public struct Command {
@@ -15,11 +15,11 @@ public struct Command {
 
     public static var none: Command { return Command(value: []) }
 
-    public static func ofAction(_ action: ActionType) -> Command {
+    public static func ofAction(_ action: BaseActionType) -> Command {
         return Command(value: [{ dispatch in dispatch(action) }])
     }
 
-    public static func ofActionOptional(_ msg: ActionType?) -> Command {
+    public static func ofActionOptional(_ msg: BaseActionType?) -> Command {
         return Command(value: [{ dispatch in msg.map(dispatch) }])
     }
 
@@ -39,7 +39,7 @@ public struct Command {
         Command.dispatch(dispatch)(self)
     }
 
-    public static func ofAsyncAction(_ async: @escaping (@escaping (ActionType) -> ()) -> ()) -> Command {
+    public static func ofAsyncAction(_ async: @escaping (@escaping (BaseActionType) -> ()) -> ()) -> Command {
         return Command(value: [{ dispatch in
             async { action in
                 DispatchQueue.main.async { dispatch(action) }
@@ -47,7 +47,7 @@ public struct Command {
         }])
     }
 
-    public static func ofAsyncActionOptional(_ async: @escaping (@escaping (ActionType?) -> ()) -> ()) -> Command {
+    public static func ofAsyncActionOptional(_ async: @escaping (@escaping (BaseActionType?) -> ()) -> ()) -> Command {
         return Command(value: [{ dispatch in
             async { action in
                 guard let action = action else { return }

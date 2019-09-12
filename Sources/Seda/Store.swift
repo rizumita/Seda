@@ -34,13 +34,17 @@ public class Store<S>: ObservableObject where S: StateType {
     }
     
     public func dispatch(_ action: ActionType) {
+        dispatchBase(action)
+    }
+    
+    fileprivate func dispatchBase(_ action: BaseActionType) {
         if let parent = parent {
             parent.dispatch(action)
         } else {
             queue.async {
                 let (newState, command) = self.reducer(action, self.state)
                 self.state = newState
-                command.dispatch(self.dispatch)
+                command.dispatch(self.dispatchBase)
             }
         }
     }
@@ -59,10 +63,10 @@ public class Store<S>: ObservableObject where S: StateType {
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 struct AnyStore {
-    let dispatch: (ActionType) -> ()
+    let dispatch: (BaseActionType) -> ()
     
     init<S: StateType>(_ store: Store<S>) {
-        self.dispatch = store.dispatch
+        self.dispatch = store.dispatchBase
     }
 }
 #endif

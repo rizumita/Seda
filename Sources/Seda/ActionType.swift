@@ -7,4 +7,8 @@
 
 import Foundation
 
-public protocol ActionType {}
+public protocol BaseActionType {}
+
+public protocol ActionType: BaseActionType {}
+
+public protocol InternalActionType: BaseActionType {}

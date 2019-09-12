@@ -44,10 +44,14 @@ public class LegacyStore<S> where S: StateType {
     }
     
     public func dispatch(_ action: ActionType) {
+        dispatchBase(action)
+    }
+    
+    private func dispatchBase(_ action: BaseActionType) {
         queue.async {
             let (newState, command) = self.reducer(action, self.state)
             self.state = newState
-            command.dispatch(self.dispatch)
+            command.dispatch(self.dispatchBase)
         }
     }
 }
