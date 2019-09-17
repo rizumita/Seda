@@ -6,7 +6,7 @@
 //
 
 import Foundation
-#if canImport(Combine)
+#if canImport(SwiftUI)
 import SwiftUI
 #endif
 
