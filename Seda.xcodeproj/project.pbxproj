@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		6AC812A82331B5AB00F63FCA /* DependsOn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC812A72331B5AB00F63FCA /* DependsOn.swift */; };
 		6ADE99132325B14200463CEF /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99122325B14200463CEF /* Store.swift */; };
 		6ADE99152325B15D00463CEF /* StateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99142325B15D00463CEF /* StateType.swift */; };
 		6ADE99172325B17300463CEF /* ActionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99162325B17300463CEF /* ActionType.swift */; };
@@ -122,6 +123,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6AC812A72331B5AB00F63FCA /* DependsOn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependsOn.swift; sourceTree = "<group>"; };
 		6ADE99122325B14200463CEF /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		6ADE99142325B15D00463CEF /* StateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateType.swift; sourceTree = "<group>"; };
 		6ADE99162325B17300463CEF /* ActionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionType.swift; sourceTree = "<group>"; };
@@ -350,6 +352,7 @@
 				6ADE991A2325B30B00463CEF /* Reducer.swift */,
 				6ADE991C2325B37700463CEF /* StatefulView.swift */,
 				6ADE99A4232729B100463CEF /* LegacyStore.swift */,
+				6AC812A72331B5AB00F63FCA /* DependsOn.swift */,
 			);
 			name = Seda;
 			path = Sources/Seda;
@@ -554,6 +557,7 @@
 			buildActionMask = 0;
 			files = (
 				6ADE99132325B14200463CEF /* Store.swift in Sources */,
+				6AC812A82331B5AB00F63FCA /* DependsOn.swift in Sources */,
 				6ADE991D2325B37700463CEF /* StatefulView.swift in Sources */,
 				6ADE99172325B17300463CEF /* ActionType.swift in Sources */,
 				6ADE99152325B15D00463CEF /* StateType.swift in Sources */,
