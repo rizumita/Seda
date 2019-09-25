@@ -19,7 +19,7 @@ public class LegacyStore<S> where S: StateType {
     private let queue: DispatchQueue
     private let pipe = opipe(S.self)
     
-    public init(reducer: @escaping Reducer<S>, state: S, queue: DispatchQueue = DispatchQueue(label: "Seda.Store.queue")) {
+    public init(reducer: @escaping Reducer<S>, state: S, queue: DispatchQueue = .main) {
         self.reducer = reducer
         self.state = state
         self.queue = queue
@@ -48,10 +48,19 @@ public class LegacyStore<S> where S: StateType {
     }
     
     private func dispatchBase(_ action: BaseActionType) {
-        queue.async {
+        let label = String(cString: __dispatch_queue_get_label(.none), encoding: .utf8)
+        let d: () -> () = {
             let (newState, command) = self.reducer(action, self.state)
             self.state = newState
             command.dispatch(self.dispatchBase)
+        }
+
+        if queue.label == label {
+            d()
+        } else {
+            queue.async {
+                d()
+            }
         }
     }
 }

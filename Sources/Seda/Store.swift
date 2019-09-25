@@ -27,7 +27,7 @@ public class Store<S>: ObservableObject where S: StateType {
     }
     private let queue: DispatchQueue
     
-    public init(reducer: @escaping Reducer<S>, state: S, queue: DispatchQueue = DispatchQueue(label: "Seda.Store.queue")) {
+    public init(reducer: @escaping Reducer<S>, state: S, queue: DispatchQueue = .main) {
         self.reducer = reducer
         self.state = state
         self.queue = queue
@@ -41,10 +41,19 @@ public class Store<S>: ObservableObject where S: StateType {
         if let parent = parent {
             parent.dispatch(action)
         } else {
-            queue.async {
+            let label = String(cString: __dispatch_queue_get_label(.none), encoding: .utf8)
+            let d: () -> () = {
                 let (newState, command) = self.reducer(action, self.state)
                 self.state = newState
                 command.dispatch(self.dispatchBase)
+            }
+
+            if queue.label == label {
+                d()
+            } else {
+                queue.async {
+                    d()
+                }
             }
         }
     }
