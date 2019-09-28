@@ -17,4 +17,12 @@ public protocol StatefulView where Self: View {
 
     var store: Store<S> { get }
 }
+
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
+public extension StatefulView {
+    func dispatch(_ action: ActionType) {
+        store.dispatch(action)
+    }
+}
 #endif
+

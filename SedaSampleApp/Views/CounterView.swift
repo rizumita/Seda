@@ -9,6 +9,8 @@ import SwiftUI
 import Seda
 
 struct CounterView: View, StatefulView {
+    typealias Action = CountAction
+    
     @EnvironmentObject var store: Store<CounterState>
     @State var isHistoryViewPresented = false
     
@@ -16,9 +18,9 @@ struct CounterView: View, StatefulView {
         NavigationView {
             VStack {
                 Stepper(onIncrement: {
-                    self.store.dispatch(CountAction.step(.up))
+                    self.dispatch(CountAction.step(.up))
                 }, onDecrement: {
-                    self.store.dispatch(CountAction.step(.down))
+                    self.dispatch(CountAction.step(.down))
                 }) {
                     Text(String(self.store.state.count))
                 }
@@ -28,13 +30,13 @@ struct CounterView: View, StatefulView {
                 
                 HStack(alignment: .center, spacing: 20.0) {
                     Button(action: {
-                        self.store.dispatch(CountAction.stepDelayed(.down))
+                        self.dispatch(CountAction.stepDelayed(.down))
                     }) {
                         Text("Decrement delayed")
                     }
 
                     Button(action: {
-                        self.store.dispatch(CountAction.stepDelayed(.up))
+                        self.dispatch(CountAction.stepDelayed(.up))
                     }) {
                         Text("Increment delayed")
                     }
