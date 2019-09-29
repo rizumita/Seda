@@ -78,6 +78,20 @@ public class Store<S>: ObservableObject where S: StateType {
         
         return result
     }
+
+    public func selected<SubState: StateType>(_ keyPath: KeyPath<S, SubState?>) -> Store<SubState>? {
+        guard let subState = state[keyPath: keyPath] else { return .none }
+        
+        let result = Store<SubState>(reducer: { _, _ in fatalError() }, state: subState, queue: queue)
+        result.parent = AnyStore(self)
+        
+        $state.map(keyPath).receive(on: queue).sink { state in
+            guard let state = state else { return }
+            result.state = state
+        }.store(in: &cancellables)
+        
+        return result
+    }
 }
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
