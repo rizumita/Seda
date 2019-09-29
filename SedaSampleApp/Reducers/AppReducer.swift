@@ -10,7 +10,7 @@ import Seda
 
 func appReducer(counterReducer: @escaping CounterReducer = counterReducer()) -> Reducer<AppState> {
     return { action, state in
-        let (counterState, counterCommand) = counterReducer(action, state?.counterState)
+        let (counterState, counterCommand) = counterReducer(action, state.counterState)
         
         return (AppState(counterState: counterState),
                 .batch([counterCommand]))

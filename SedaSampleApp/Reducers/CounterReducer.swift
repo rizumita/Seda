@@ -12,7 +12,7 @@ typealias CounterReducer = Reducer<CounterState>
 
 func counterReducer() -> CounterReducer {
     return { action, state in
-        var state = state ?? CounterState()
+        var state = state
         var command = Command.none
         
         switch action {
