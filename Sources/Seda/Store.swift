@@ -27,6 +27,16 @@ public class Store<S>: ObservableObject where S: StateType {
     }
     private let queue: DispatchQueue
     
+    public init(reducer: @escaping Reducer<S>, stateInit: () -> (S, Command), queue: DispatchQueue = .main) {
+        let (state, command) = stateInit()
+        
+        self.reducer = reducer
+        self.state = state
+        self.queue = queue
+        
+        command.dispatch(self.dispatchBase)
+    }
+    
     public init(reducer: @escaping Reducer<S>, state: S, queue: DispatchQueue = .main) {
         self.reducer = reducer
         self.state = state

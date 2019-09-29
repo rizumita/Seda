@@ -8,3 +8,4 @@
 import Foundation
 
 public typealias Reducer<S: StateType> = (BaseActionType, S?) -> (S, Command)
+public typealias ReducerOpt<S: StateType> = (BaseActionType, S?) -> (S?, Command)
