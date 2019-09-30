@@ -19,6 +19,16 @@ public class LegacyStore<S> where S: StateType {
     private let queue: DispatchQueue
     private let pipe = opipe(S.self)
     
+    public init(reducer: @escaping Reducer<S>, stateInit: () -> (S, Command), queue: DispatchQueue = .main) {
+        let (state, command) = stateInit()
+        
+        self.reducer = reducer
+        self.state = state
+        self.queue = queue
+        
+        command.dispatch(self.dispatchBase)
+    }
+
     public init(reducer: @escaping Reducer<S>, state: S, queue: DispatchQueue = .main) {
         self.reducer = reducer
         self.state = state
