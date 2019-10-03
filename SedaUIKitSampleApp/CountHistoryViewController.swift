@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 import Seda
 
 class CountHistoryViewController: UITableViewController {
@@ -14,14 +15,14 @@ class CountHistoryViewController: UITableViewController {
             tableView.reloadData()
         }
     }
-    private var token: ObserveToken?
+    private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        token = store.observe(\.counterState) { [weak self] state in
+        store.$state.map(\.counterState).sink { [weak self] state in
             self?.history = state.history
-        }
+        }.store(in: &cancellables)
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -46,11 +47,11 @@ class CountHistoryViewController: UITableViewController {
         return true
     }
     
-    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let delete = UITableViewRowAction(style: .destructive, title: "Delete") { action, indexPath in
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .destructive, title: "Delete") { action, view, completion in
             store.dispatch(CountAction.remove(IndexSet(integer: indexPath.row)))
+            completion(true)
         }
-        
-        return [delete]
+        return UISwipeActionsConfiguration(actions: [action])
     }
 }

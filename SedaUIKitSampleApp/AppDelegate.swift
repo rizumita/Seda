@@ -8,7 +8,7 @@
 import UIKit
 import Seda
 
-let store = LegacyStore(reducer: appReducer(), state: AppState())
+let store = Store(reducer: appReducer(), state: AppState())
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

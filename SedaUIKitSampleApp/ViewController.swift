@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import Combine
 import Seda
 
 class ViewController: UIViewController {
     @IBOutlet weak var countLabel: UILabel!
-    var token: ObserveToken?
+    var cancellables = Set<AnyCancellable>()
     var oldStepperValue = 0.0
     
     override func viewDidLoad() {
@@ -18,9 +19,9 @@ class ViewController: UIViewController {
         
         countLabel.text = "0"
         
-        token = store.observe { [weak self] state in
-            self?.countLabel.text = String(state.counterState.count)
-        }
+        store.$state.map(\.counterState).sink { [weak self] state in
+            self?.countLabel.text = String(state.count)
+        }.store(in: &cancellables)
     }
     
     @IBAction func stepperButtonTapped(_ sender: UIStepper) {

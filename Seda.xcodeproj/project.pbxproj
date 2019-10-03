@@ -32,8 +32,10 @@
 		6A1A04B523462C0B00C9644A /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99182325B19600463CEF /* Command.swift */; };
 		6A1A04B623462C0B00C9644A /* Reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE991A2325B30B00463CEF /* Reducer.swift */; };
 		6A1A04B723462C0B00C9644A /* StatefulView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE991C2325B37700463CEF /* StatefulView.swift */; };
-		6A1A04B823462C0B00C9644A /* LegacyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99A4232729B100463CEF /* LegacyStore.swift */; };
 		6A1A04B923462C0B00C9644A /* DependsOn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC812A72331B5AB00F63FCA /* DependsOn.swift */; };
+		6A1A04BA2346A87900C9644A /* OptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1A048723460C9200C9644A /* OptState.swift */; };
+		6A1A04BB2346A88D00C9644A /* OptReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1A048923460CB600C9644A /* OptReducer.swift */; };
+		6A1A04BC2346A8E100C9644A /* OptAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1A048B23460CE500C9644A /* OptAction.swift */; };
 		6AC812A82331B5AB00F63FCA /* DependsOn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC812A72331B5AB00F63FCA /* DependsOn.swift */; };
 		6ADE99132325B14200463CEF /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99122325B14200463CEF /* Store.swift */; };
 		6ADE99152325B15D00463CEF /* StateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99142325B15D00463CEF /* StateType.swift */; };
@@ -60,7 +62,6 @@
 		6ADE999A232728EA00463CEF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6ADE9999232728EA00463CEF /* Assets.xcassets */; };
 		6ADE999D232728EA00463CEF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6ADE999B232728EA00463CEF /* LaunchScreen.storyboard */; };
 		6ADE99A32327293700463CEF /* Store+SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99A22327293700463CEF /* Store+SwiftUI.swift */; };
-		6ADE99A5232729B100463CEF /* LegacyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99A4232729B100463CEF /* LegacyStore.swift */; };
 		6ADE99A623272B6900463CEF /* AppReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99452325BB6400463CEF /* AppReducer.swift */; };
 		6ADE99A723272B6900463CEF /* CounterReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99472325BBB500463CEF /* CounterReducer.swift */; };
 		6ADE99A823272B6C00463CEF /* CountAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99512325BD7700463CEF /* CountAction.swift */; };
@@ -150,7 +151,6 @@
 		6ADE999C232728EA00463CEF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6ADE999E232728EA00463CEF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6ADE99A22327293700463CEF /* Store+SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Store+SwiftUI.swift"; sourceTree = "<group>"; };
-		6ADE99A4232729B100463CEF /* LegacyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyStore.swift; sourceTree = "<group>"; };
 		6ADE99B123272D0B00463CEF /* CountHistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountHistoryViewController.swift; sourceTree = "<group>"; };
 		6ADE99B323272D1D00463CEF /* CountHistory.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CountHistory.storyboard; sourceTree = "<group>"; };
 		OBJ_12 /* SedaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SedaTests.swift; sourceTree = "<group>"; };
@@ -351,7 +351,6 @@
 				6ADE99182325B19600463CEF /* Command.swift */,
 				6ADE991A2325B30B00463CEF /* Reducer.swift */,
 				6ADE991C2325B37700463CEF /* StatefulView.swift */,
-				6ADE99A4232729B100463CEF /* LegacyStore.swift */,
 				6AC812A72331B5AB00F63FCA /* DependsOn.swift */,
 			);
 			name = Seda;
@@ -521,7 +520,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A1A04B823462C0B00C9644A /* LegacyStore.swift in Sources */,
 				6A1A04B123462C0B00C9644A /* Store.swift in Sources */,
 				6A1A04B223462C0B00C9644A /* Store+SwiftUI.swift in Sources */,
 				6A1A048E23460E3700C9644A /* OptView.swift in Sources */,
@@ -552,10 +550,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				6ADE99AB23272B7400463CEF /* CounterState.swift in Sources */,
+				6A1A04BA2346A87900C9644A /* OptState.swift in Sources */,
 				6ADE9995232728E900463CEF /* ViewController.swift in Sources */,
 				6ADE99B223272D0B00463CEF /* CountHistoryViewController.swift in Sources */,
 				6ADE99A823272B6C00463CEF /* CountAction.swift in Sources */,
 				6ADE99A723272B6900463CEF /* CounterReducer.swift in Sources */,
+				6A1A04BB2346A88D00C9644A /* OptReducer.swift in Sources */,
+				6A1A04BC2346A8E100C9644A /* OptAction.swift in Sources */,
 				6ADE99AA23272B7400463CEF /* AppState.swift in Sources */,
 				6ADE99A923272B7000463CEF /* Step.swift in Sources */,
 				6ADE9991232728E900463CEF /* AppDelegate.swift in Sources */,
@@ -574,7 +575,6 @@
 				6ADE99152325B15D00463CEF /* StateType.swift in Sources */,
 				6ADE991B2325B30B00463CEF /* Reducer.swift in Sources */,
 				6ADE99192325B19600463CEF /* Command.swift in Sources */,
-				6ADE99A5232729B100463CEF /* LegacyStore.swift in Sources */,
 				6ADE99A32327293700463CEF /* Store+SwiftUI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -820,7 +820,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = SedaUIKitSampleApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -879,7 +879,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = SedaUIKitSampleApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
