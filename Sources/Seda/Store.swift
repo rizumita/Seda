@@ -10,7 +10,6 @@ import Foundation
 import Combine
 #endif
 
-#if swift(>=5.1)
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 public class Store<S>: ObservableObject, Identifiable where S: StateType {
     public var id = UUID()
@@ -103,4 +102,3 @@ struct AnyStore {
         self.dispatch = store.dispatchBase
     }
 }
-#endif
