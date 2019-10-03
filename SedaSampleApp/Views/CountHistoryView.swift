@@ -9,11 +9,12 @@ import SwiftUI
 import Seda
 
 struct CountHistoryView: View, StatefulView {
-    @EnvironmentObject var store: Store<CounterState>
+    @EnvironmentObject var store: Store<AppState>
+    var stateKeyPath: KeyPath<AppState, CounterState> = \.counterState
 
     var body: some View {
         List {
-            ForEach(self.store.state.history, id: \.self) { step in
+            ForEach(self.state.history, id: \.self) { step in
                 Text(step.description)
             }
             .onDelete { indexSet in
