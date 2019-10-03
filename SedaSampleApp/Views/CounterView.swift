@@ -19,9 +19,9 @@ struct CounterView: View, StatefulView {
         NavigationView {
             VStack {
                 Stepper(onIncrement: {
-                    self.dispatch(CountAction.step(.up))
+                    self.dispatch(.step(.up))
                 }, onDecrement: {
-                    self.dispatch(CountAction.step(.down))
+                    self.dispatch(.step(.down))
                 }) {
                     Text(String(self.state.count))
                 }
@@ -31,13 +31,13 @@ struct CounterView: View, StatefulView {
                 
                 HStack(alignment: .center, spacing: 20.0) {
                     Button(action: {
-                        self.dispatch(CountAction.stepDelayed(.down))
+                        self.dispatch(.stepDelayed(.down))
                     }) {
                         Text("Decrement delayed")
                     }
 
                     Button(action: {
-                        self.dispatch(CountAction.stepDelayed(.up))
+                        self.dispatch(.stepDelayed(.up))
                     }) {
                         Text("Increment delayed")
                     }
@@ -60,7 +60,7 @@ struct CounterView: View, StatefulView {
                 Spacer()
                 
                 Button(action: {
-                    self.dispatch(OptAction.start("Optional state view text field"))
+                    self.store.dispatch(OptAction.start("Optional state view text field"))
                 }) {
                     Text("Optional state view")
                 }
