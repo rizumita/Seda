@@ -57,10 +57,19 @@ struct CounterView: View, StatefulView {
                 }
                 
                 Spacer()
+                
+                Button(action: {
+                    self.dispatch(OptAction.start("Optional state view text field"))
+                }) {
+                    Text("Optional state view")
+                }
             }
         }
         .sheet(isPresented: $isHistoryViewPresented) {
             CountHistoryView().environmentObject(self.store)
+        }
+        .sheet(item: store.selectedBinding(\.optState, dismissAction: OptAction.finish)) { store in
+            OptView().environmentObject(store)
         }
     }
 }

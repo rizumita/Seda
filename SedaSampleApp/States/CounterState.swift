@@ -11,4 +11,6 @@ import Seda
 struct CounterState: StateType {
     var count: Int = 0
     var history: [Step] = []
+    
+    var optState: OptState?
 }

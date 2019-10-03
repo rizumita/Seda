@@ -12,7 +12,8 @@ import Combine
 
 #if swift(>=5.1)
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
-public class Store<S>: ObservableObject where S: StateType {
+public class Store<S>: ObservableObject, Identifiable where S: StateType {
+    public var id = UUID()
     public var objectWillChange = PassthroughSubject<S, Never>()
     private var parent: AnyStore?
     private var cancellables = Set<AnyCancellable>()

@@ -8,11 +8,18 @@
 import Foundation
 import Seda
 
-func appReducer(counterReducer: @escaping CounterReducer = counterReducer()) -> Reducer<AppState> {
+func appReducer(counterReducer: @escaping CounterReducer = counterReducer(),
+                optReducer: @escaping OptReducer = optReducer()) -> Reducer<AppState> {
     return { action, state in
-        let (counterState, counterCommand) = counterReducer(action, state.counterState)
+        var state = state
         
-        return (AppState(counterState: counterState),
-                .batch([counterCommand]))
+        let (counterState, counterCommand) = counterReducer(action, state.counterState)
+        state.counterState = counterState
+        
+        let (optState, optCommand) = optReducer(action, state.counterState.optState)
+        state.counterState.optState = optState
+        
+        return (state,
+                .batch([counterCommand, optCommand]))
     }
 }
