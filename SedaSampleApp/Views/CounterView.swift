@@ -11,7 +11,8 @@ import Seda
 struct CounterView: View, StatefulView {
     typealias Action = CountAction
     
-    @EnvironmentObject var store: Store<CounterState>
+    @EnvironmentObject var store: Store<AppState>
+    var stateKeyPath: KeyPath<AppState, CounterState> = \.counterState
     @State var isHistoryViewPresented = false
     
     var body: some View {
@@ -22,7 +23,7 @@ struct CounterView: View, StatefulView {
                 }, onDecrement: {
                     self.dispatch(CountAction.step(.down))
                 }) {
-                    Text(String(self.store.state.count))
+                    Text(String(self.state.count))
                 }
                 .frame(width: 200.0, alignment: .center)
 
@@ -68,7 +69,7 @@ struct CounterView: View, StatefulView {
         .sheet(isPresented: $isHistoryViewPresented) {
             CountHistoryView().environmentObject(self.store)
         }
-        .sheet(item: store.selectedBinding(\.optState, dismissAction: OptAction.finish)) { store in
+        .sheet(item: store.selectedBinding(\.counterState.optState, dismissAction: OptAction.finish)) { store in
             OptView().environmentObject(store)
         }
     }
