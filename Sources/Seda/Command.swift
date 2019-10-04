@@ -19,8 +19,8 @@ public struct Command {
         return Command(value: [{ dispatch in dispatch(action) }])
     }
 
-    public static func ofActionOptional(_ msg: BaseActionType?) -> Command {
-        return Command(value: [{ dispatch in msg.map(dispatch) }])
+    public static func ofActionOptional(_ action: BaseActionType?) -> Command {
+        return Command(value: [{ dispatch in action.map(dispatch) }])
     }
 
     public static func batch(_ cmds: [Command]) -> Command {
