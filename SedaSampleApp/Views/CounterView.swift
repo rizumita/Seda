@@ -69,8 +69,8 @@ struct CounterView: View, StatefulView {
         .sheet(isPresented: $isHistoryViewPresented) {
             CountHistoryView().environmentObject(self.store)
         }
-        .sheet(item: store.selectedBinding(\.counterState.optState, dismissAction: OptAction.finish)) { store in
-            OptView().environmentObject(store)
+        .sheet(item: store.substoreBinding(\.counterState.optState, dismissAction: OptAction.finish)) {
+            OptView().environmentObject($0)
         }
     }
 }

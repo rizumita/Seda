@@ -26,18 +26,20 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
             }
             
             let label = String(cString: __dispatch_queue_get_label(.none), encoding: .utf8)
-
+            
             if label == DispatchQueue.main.label {
                 objectWillChange.send(newValue)
             } else {
-                DispatchQueue.main.async {
-                    self.objectWillChange.send(newValue)
+                DispatchQueue.main.async { [weak self] in
+                    self?.objectWillChange.send(newValue)
                 }
             }
         }
     }
     private let queue: DispatchQueue
-    
+    private var parent: AnyStore?
+    private var substores = [AnyKeyPath : AnyStore]()
+
     public init(reducer: @escaping Reducer<S>,
                 stateInit: () -> (S, Command),
                 isEqual: ((S, S) -> Bool)? = .none,
@@ -67,19 +69,73 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
     }
     
     fileprivate func dispatchBase(_ action: BaseActionType) {
-        let label = String(cString: __dispatch_queue_get_label(.none), encoding: .utf8)
-        let d: () -> () = {
-            let (newState, command) = self.reducer(action, self.state)
-            self.state = newState
-            command.dispatch(self.dispatchBase)
-        }
-
-        if queue.label == label {
-            d()
+        if let parent = parent {
+            parent.dispatch(action)
         } else {
-            queue.async {
+            let label = String(cString: __dispatch_queue_get_label(.none), encoding: .utf8)
+            let d: () -> () = { [weak self] in
+                guard let `self` = self else { return }
+                let (newState, command) = self.reducer(action, self.state)
+                self.state = newState
+                command.dispatch(self.dispatchBase)
+            }
+            
+            if queue.label == label {
                 d()
+            } else {
+                queue.async {
+                    d()
+                }
             }
         }
+    }
+    
+    public func substore<SubState: StateType>(_ keyPath: KeyPath<S, SubState>) -> Store<SubState> {
+        if let store = substores[keyPath]?.store as? Store<SubState> {
+            return store
+        }
+        
+        let result = Store<SubState>(reducer: { _, _ in fatalError() }, state: state[keyPath: keyPath], queue: queue)
+        result.parent = AnyStore(self)
+        
+        $state.map(keyPath).receive(on: queue).sink { [weak result] state in
+            result?.state = state
+        }.store(in: &result.cancellables)
+        
+        return result
+    }
+    
+    public func substore<SubState: StateType>(_ keyPath: KeyPath<S, SubState?>) -> Store<SubState>? {
+        guard let subState = state[keyPath: keyPath] else { return .none }
+        
+        if let store = substores[keyPath]?.store as? Store<SubState> {
+            return store
+        }
+        
+        let result = Store<SubState>(reducer: { _, _ in fatalError() }, state: subState, queue: queue)
+        result.parent = AnyStore(self)
+        
+        $state.map(keyPath).receive(on: queue).sink { [weak self, weak result] state in
+            guard let state = state else {
+                self?.substores.removeValue(forKey: keyPath)
+                return
+            }
+            result?.state = state
+        }.store(in: &result.cancellables)
+        
+        substores[keyPath] = AnyStore(result)
+        
+        return result
+    }
+}
+
+@available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
+struct AnyStore {
+    let dispatch: (BaseActionType) -> ()
+    let store: Any
+    
+    init<S: StateType>(_ store: Store<S>) {
+        self.dispatch = store.dispatchBase
+        self.store = store
     }
 }

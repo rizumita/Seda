@@ -12,7 +12,7 @@ struct OptView: View, StatefulView {
     @EnvironmentObject var store: Store<OptState>
     
     var body: some View {
-        TextField("Text", text: store.binding(OptAction.setText, \.text))
+        TextField("Text", text: self.binding(\.text, set: OptAction.setText))
     }
 }
 

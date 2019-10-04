@@ -15,7 +15,7 @@ public protocol StatefulView where Self: View {
     associatedtype S: StateType
     associatedtype SS: StateType = S
     associatedtype Action: BaseActionType = _DummyAction
-
+    
     var store: Store<S> { get }
     var stateKeyPath: KeyPath<S, SS> { get }
     var state: SS { get }
@@ -24,6 +24,31 @@ public protocol StatefulView where Self: View {
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 public extension StatefulView {
     var state: SS { store.state[keyPath: stateKeyPath] }
+    
+    func binding<Value>(_ keyPath: KeyPath<SS, Value>,
+                        set: @escaping (Value) -> ActionType) -> Binding<Value> {
+        let compoundKeyPath = stateKeyPath.appending(path: keyPath)
+        return store.binding(compoundKeyPath, set: set)
+    }
+    
+    func binding<Value>(_ keyPath: KeyPath<SS, Value>, unset: ActionType? = .none) -> Binding<Value> {
+        let compoundKeyPath = stateKeyPath.appending(path: keyPath)
+        return store.binding(compoundKeyPath, unset: unset)
+    }
+    
+    func binding<Value>(_ keyPath: KeyPath<SS, Value?>,
+                        set: @escaping (Value?) -> ActionType,
+                        defaultValue: Value) -> Binding<Value> {
+        let compoundKeyPath = stateKeyPath.appending(path: keyPath)
+        return store.binding(compoundKeyPath, set: set, defaultValue: defaultValue)
+    }
+    
+    func binding<Value>(_ keyPath: KeyPath<SS, Value?>,
+                        unset: ActionType? = .none,
+                        defaultValue: Value) -> Binding<Value> {
+        let compoundKeyPath = stateKeyPath.appending(path: keyPath)
+        return store.binding(compoundKeyPath, unset: unset, defaultValue: defaultValue)
+    }
 }
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
