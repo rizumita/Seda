@@ -36,6 +36,8 @@
 		6A1A04BA2346A87900C9644A /* OptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1A048723460C9200C9644A /* OptState.swift */; };
 		6A1A04BB2346A88D00C9644A /* OptReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1A048923460CB600C9644A /* OptReducer.swift */; };
 		6A1A04BC2346A8E100C9644A /* OptAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1A048B23460CE500C9644A /* OptAction.swift */; };
+		6A1A04BE2346AAA700C9644A /* StoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1A04BD2346AAA700C9644A /* StoreTests.swift */; };
+		6A1A04C02346D3FE00C9644A /* CommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1A04BF2346D3FE00C9644A /* CommandTests.swift */; };
 		6AC812A82331B5AB00F63FCA /* DependsOn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC812A72331B5AB00F63FCA /* DependsOn.swift */; };
 		6ADE99132325B14200463CEF /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99122325B14200463CEF /* Store.swift */; };
 		6ADE99152325B15D00463CEF /* StateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99142325B15D00463CEF /* StateType.swift */; };
@@ -73,7 +75,6 @@
 		6ADE99B223272D0B00463CEF /* CountHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99B123272D0B00463CEF /* CountHistoryViewController.swift */; };
 		6ADE99B423272D1D00463CEF /* CountHistory.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6ADE99B323272D1D00463CEF /* CountHistory.storyboard */; };
 		OBJ_30 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
-		OBJ_41 /* SedaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* SedaTests.swift */; };
 		OBJ_42 /* XCTestManifests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* XCTestManifests.swift */; };
 		OBJ_44 /* Seda.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Seda::Seda::Product" /* Seda.framework */; };
 /* End PBXBuildFile section */
@@ -121,6 +122,8 @@
 		6A1A048923460CB600C9644A /* OptReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptReducer.swift; sourceTree = "<group>"; };
 		6A1A048B23460CE500C9644A /* OptAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptAction.swift; sourceTree = "<group>"; };
 		6A1A048D23460E3700C9644A /* OptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptView.swift; sourceTree = "<group>"; };
+		6A1A04BD2346AAA700C9644A /* StoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreTests.swift; sourceTree = "<group>"; };
+		6A1A04BF2346D3FE00C9644A /* CommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandTests.swift; sourceTree = "<group>"; };
 		6AC812A72331B5AB00F63FCA /* DependsOn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependsOn.swift; sourceTree = "<group>"; };
 		6ADE99122325B14200463CEF /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		6ADE99142325B15D00463CEF /* StateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateType.swift; sourceTree = "<group>"; };
@@ -153,7 +156,6 @@
 		6ADE99A22327293700463CEF /* Store+SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Store+SwiftUI.swift"; sourceTree = "<group>"; };
 		6ADE99B123272D0B00463CEF /* CountHistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountHistoryViewController.swift; sourceTree = "<group>"; };
 		6ADE99B323272D1D00463CEF /* CountHistory.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CountHistory.storyboard; sourceTree = "<group>"; };
-		OBJ_12 /* SedaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SedaTests.swift; sourceTree = "<group>"; };
 		OBJ_13 /* XCTestManifests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTestManifests.swift; sourceTree = "<group>"; };
 		OBJ_17 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
@@ -301,7 +303,8 @@
 		OBJ_11 /* SedaTests */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_12 /* SedaTests.swift */,
+				6A1A04BD2346AAA700C9644A /* StoreTests.swift */,
+				6A1A04BF2346D3FE00C9644A /* CommandTests.swift */,
 				OBJ_13 /* XCTestManifests.swift */,
 			);
 			name = SedaTests;
@@ -591,8 +594,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_41 /* SedaTests.swift in Sources */,
+				6A1A04C02346D3FE00C9644A /* CommandTests.swift in Sources */,
 				OBJ_42 /* XCTestManifests.swift in Sources */,
+				6A1A04BE2346AAA700C9644A /* StoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1028,17 +1032,17 @@
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Seda.xcodeproj/SedaTests_Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
 				SWIFT_VERSION = 5.0;
 				TARGET_NAME = SedaTests;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+				TVOS_DEPLOYMENT_TARGET = 13.0;
+				WATCHOS_DEPLOYMENT_TARGET = 6.0;
 			};
 			name = Debug;
 		};
@@ -1054,17 +1058,17 @@
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Seda.xcodeproj/SedaTests_Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
 				SWIFT_VERSION = 5.0;
 				TARGET_NAME = SedaTests;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+				TVOS_DEPLOYMENT_TARGET = 13.0;
+				WATCHOS_DEPLOYMENT_TARGET = 6.0;
 			};
 			name = Release;
 		};

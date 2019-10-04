@@ -21,14 +21,4 @@ extension Store {
                 self?.dispatch(actionable(value))
         })
     }
-    
-    public func selectedBinding<SubState: StateType>(_ keyPath: KeyPath<S, SubState?>, dismissAction: ActionType) -> Binding<Store<SubState>?> {
-        Binding(get: {
-            self.selected(keyPath)
-        }) { store in
-            if store == nil {
-                self.dispatch(dismissAction)
-            }
-        }
-    }
 }

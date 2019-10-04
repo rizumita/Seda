@@ -12,34 +12,53 @@ import Combine
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 public class Store<S>: ObservableObject, Identifiable where S: StateType {
-    public var id = UUID()
-    public var objectWillChange = PassthroughSubject<S, Never>()
-    private var parent: AnyStore?
+    public let id = UUID()
+    public let objectWillChange = PassthroughSubject<S, Never>()
+    private var isEqualState: ((S, S) -> Bool)?
     private var cancellables = Set<AnyCancellable>()
     
     private let reducer: Reducer<S>
     @Published public private(set) var state: S {
         willSet {
-            DispatchQueue.main.async {
-                self.objectWillChange.send(self.state)
+            if let isEqualState = isEqualState,
+                isEqualState(state, newValue) {
+                return
+            }
+            
+            let label = String(cString: __dispatch_queue_get_label(.none), encoding: .utf8)
+
+            if label == DispatchQueue.main.label {
+                objectWillChange.send(newValue)
+            } else {
+                DispatchQueue.main.async {
+                    self.objectWillChange.send(newValue)
+                }
             }
         }
     }
     private let queue: DispatchQueue
     
-    public init(reducer: @escaping Reducer<S>, stateInit: () -> (S, Command), queue: DispatchQueue = .main) {
+    public init(reducer: @escaping Reducer<S>,
+                stateInit: () -> (S, Command),
+                isEqual: ((S, S) -> Bool)? = .none,
+                queue: DispatchQueue = .main) {
         let (state, command) = stateInit()
         
         self.reducer = reducer
         self.state = state
+        self.isEqualState = isEqual
         self.queue = queue
         
         command.dispatch(self.dispatchBase)
     }
     
-    public init(reducer: @escaping Reducer<S>, state: S, queue: DispatchQueue = .main) {
+    public init(reducer: @escaping Reducer<S>,
+                state: S,
+                isEqual: ((S, S) -> Bool)? = .none,
+                queue: DispatchQueue = .main) {
         self.reducer = reducer
         self.state = state
+        self.isEqualState = isEqual
         self.queue = queue
     }
     
@@ -48,57 +67,19 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
     }
     
     fileprivate func dispatchBase(_ action: BaseActionType) {
-        if let parent = parent {
-            parent.dispatch(action)
-        } else {
-            let label = String(cString: __dispatch_queue_get_label(.none), encoding: .utf8)
-            let d: () -> () = {
-                let (newState, command) = self.reducer(action, self.state)
-                self.state = newState
-                command.dispatch(self.dispatchBase)
-            }
+        let label = String(cString: __dispatch_queue_get_label(.none), encoding: .utf8)
+        let d: () -> () = {
+            let (newState, command) = self.reducer(action, self.state)
+            self.state = newState
+            command.dispatch(self.dispatchBase)
+        }
 
-            if queue.label == label {
+        if queue.label == label {
+            d()
+        } else {
+            queue.async {
                 d()
-            } else {
-                queue.async {
-                    d()
-                }
             }
         }
-    }
-    
-    public func selected<SubState: StateType>(_ keyPath: KeyPath<S, SubState>) -> Store<SubState> {
-        let result = Store<SubState>(reducer: { _, _ in fatalError() }, state: state[keyPath: keyPath], queue: queue)
-        result.parent = AnyStore(self)
-        
-        $state.map(keyPath).receive(on: queue).sink { state in
-            result.state = state
-        }.store(in: &cancellables)
-        
-        return result
-    }
-
-    public func selected<SubState: StateType>(_ keyPath: KeyPath<S, SubState?>) -> Store<SubState>? {
-        guard let subState = state[keyPath: keyPath] else { return .none }
-        
-        let result = Store<SubState>(reducer: { _, _ in fatalError() }, state: subState, queue: queue)
-        result.parent = AnyStore(self)
-        
-        $state.map(keyPath).receive(on: queue).sink { state in
-            guard let state = state else { return }
-            result.state = state
-        }.store(in: &cancellables)
-        
-        return result
-    }
-}
-
-@available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
-struct AnyStore {
-    let dispatch: (BaseActionType) -> ()
-    
-    init<S: StateType>(_ store: Store<S>) {
-        self.dispatch = store.dispatchBase
     }
 }
