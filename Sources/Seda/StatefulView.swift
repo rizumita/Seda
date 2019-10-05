@@ -47,7 +47,7 @@ public extension StatefulView {
                         unset: ActionType? = .none,
                         defaultValue: Value) -> Binding<Value> {
         let compoundKeyPath = stateKeyPath.appending(path: keyPath)
-        return store.binding(compoundKeyPath, unset: unset, defaultValue: defaultValue)
+        return store.binding(compoundKeyPath, setAction: unset, defaultValue: defaultValue)
     }
 }
 

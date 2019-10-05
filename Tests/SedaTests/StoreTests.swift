@@ -14,6 +14,8 @@ class StoreTests: XCTestCase {
         case up
         case noAction
         case setCount(Int)
+        case setString(String?)
+        case resetString
     }
 
     struct TestState: StateType, Equatable {
@@ -22,6 +24,7 @@ class StoreTests: XCTestCase {
         }
         
         var count: Int = 0
+        var string: String?
     }
 
     func reducer() -> Reducer<TestState> {
@@ -33,6 +36,10 @@ class StoreTests: XCTestCase {
                     state.count += 1
                 case .setCount(let count):
                     state.count = count
+                case .setString(let string):
+                    state.string = string
+                case .resetString:
+                    state.string = .none
                 default: ()
                 }
             }
@@ -82,11 +89,56 @@ class StoreTests: XCTestCase {
     func testBinding() {
         let store = Store(reducer: reducer(), state: TestState())
         
-        let binding = store.binding(TestAction.setCount, \.count)
+        let binding = store.binding(\.count)
+        store.dispatch(TestAction.up)
+        XCTAssertEqual(1, binding.wrappedValue)
+    }
+
+    func testBindingWithSet() {
+        let store = Store(reducer: reducer(), state: TestState())
+        
+        let binding = store.binding(\.count, set: TestAction.setCount)
         store.dispatch(TestAction.up)
         XCTAssertEqual(1, binding.wrappedValue)
         
         binding.wrappedValue = 100
         XCTAssertEqual(100, store.state.count)
+    }
+
+    func testBindingWithSetAndDefaultValue() {
+        let store = Store(reducer: reducer(), state: TestState())
+        
+        let binding = store.binding(\.string, set: TestAction.setString, defaultValue: "default")
+        XCTAssertEqual("default", binding.wrappedValue)
+
+        store.dispatch(TestAction.setString("first"))
+        XCTAssertEqual("first", binding.wrappedValue)
+
+        binding.wrappedValue = "second"
+        XCTAssertEqual("second", store.state.string)
+    }
+
+    func testBindingWithUnset() {
+        let store = Store(reducer: reducer(), state: TestState())
+        
+        let binding = store.binding(\.string, unset: TestAction.resetString)
+        store.dispatch(TestAction.setString("first"))
+        XCTAssertEqual("first", binding.wrappedValue)
+        
+        binding.wrappedValue = .none
+        XCTAssertEqual(.none, store.state.string)
+    }
+
+    func testBindingWithSetActionAndDefaultValue() {
+        let store = Store(reducer: reducer(), state: TestState())
+        
+        let binding = store.binding(\.string, setAction: TestAction.resetString, defaultValue: "default")
+        XCTAssertEqual("default", binding.wrappedValue)
+
+        store.dispatch(TestAction.setString("first"))
+        XCTAssertEqual("first", binding.wrappedValue)
+        
+        binding.wrappedValue = "second"
+        XCTAssertEqual(nil, store.state.string)
     }
 }

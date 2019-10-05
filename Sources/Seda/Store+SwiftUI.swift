@@ -44,13 +44,13 @@ extension Store {
     }
     
     public func binding<Value>(_ keyPath: KeyPath<S, Value?>,
-                               unset: ActionType? = .none,
+                               setAction: ActionType? = .none,
                                defaultValue: Value) -> Binding<Value> {
         Binding(get: { [weak self] in
             guard let this = self else { fatalError() }
             return this.state[keyPath: keyPath] ?? defaultValue
             }, set: { [weak self] value in
-                guard let unset = unset else { return }
+                guard let unset = setAction else { return }
                 self?.dispatch(unset)
         })
     }
