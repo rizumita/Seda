@@ -8,7 +8,7 @@
 import SwiftUI
 import Seda
 
-struct OptView: View, StatefulView {
+struct OptView: StatefulView {
     @EnvironmentObject var store: Store<OptState>
     
     var body: some View {

@@ -8,7 +8,7 @@
 import SwiftUI
 import Seda
 
-struct CounterView: View, StatefulView {
+struct CounterView: StatefulView {
     typealias Action = CountAction
     
     @EnvironmentObject var store: Store<AppState>

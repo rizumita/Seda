@@ -11,7 +11,7 @@ import SwiftUI
 #endif
 
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
-public protocol StatefulView where Self: View {
+public protocol StatefulView: View {
     associatedtype State: StateType
     associatedtype Substate: StateType = State
     associatedtype Action: BaseActionType = _DummyAction

@@ -8,7 +8,7 @@
 import SwiftUI
 import Seda
 
-struct CountHistoryView: View, StatefulView {
+struct CountHistoryView: StatefulView {
     @EnvironmentObject var store: Store<AppState>
     var stateKeyPath: KeyPath<AppState, CounterState> = \.counterState
 
