@@ -9,7 +9,7 @@ import UIKit
 import SwiftUI
 import Seda
 
-var appStore = Store<AppState>(reducer: appReducer(), state: AppState())
+let appStore = Store<AppState>(reducer: appReducer(), state: AppState())
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
