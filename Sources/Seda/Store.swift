@@ -74,6 +74,8 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
     }
     
     public func subscribe() {
+        guard !isSubscribing else { return }
+        
         runOnQueue {
             self.isSubscribing = true
             self.objectWillChange.send(self.state)
@@ -81,6 +83,8 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
     }
     
     public func unsubscribe() {
+        guard isSubscribing else { return }
+        
         runOnQueue {
             self.isSubscribing = false
             self.objectWillChange.send(self.state)
