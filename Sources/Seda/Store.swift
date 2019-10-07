@@ -13,11 +13,7 @@ import Combine
 @available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 public class Store<S>: ObservableObject, Identifiable where S: StateType {
     public let id = UUID()
-    public let objectWillChange = PassthroughSubject<S, Never>()
-    private var isEqualState: ((S, S) -> Bool)?
-    private var cancellables = Set<AnyCancellable>()
-    
-    private let reducer: Reducer<S>
+    public let objectWillChange = PassthroughSubject<S, Never>()    
     @Published public private(set) var state: S {
         willSet {
             if let isEqualState = isEqualState,
@@ -32,10 +28,15 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
             }
         }
     }
+
+    private let reducer: Reducer<S>
     private let queue: DispatchQueue
     private var parent: AnyStore?
-    private var substores = [AnyKeyPath : AnyStore]()
+    private var isEqualState: ((S, S) -> Bool)?
     private var isSubscribing: Bool = true
+
+    private var substores = [AnyKeyPath : AnyStore]()
+    private var cancellables = Set<AnyCancellable>()
 
     public init(reducer: @escaping Reducer<S>,
                 stateInit: () -> (S, Command),
@@ -107,7 +108,7 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
         }
     }
     
-    public func substore<SubState: StateType>(_ keyPath: KeyPath<S, SubState>, isSubscribing: Bool = true) -> Store<SubState> {
+    public func substore<SubState: StateType>(_ keyPath: KeyPath<S, SubState>, isSubscribing: Bool = true, isEqual: ((SubState, SubState) -> Bool)? = .none) -> Store<SubState> {
         if let store = substores[keyPath]?.store as? Store<SubState> {
             return store
         }
@@ -115,6 +116,7 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
         let result = Store<SubState>(reducer: { _, _ in fatalError() }, state: state[keyPath: keyPath], queue: queue)
         result.parent = AnyStore(self)
         result.isSubscribing = isSubscribing
+        result.isEqualState = isEqual
         
         $state.map(keyPath).receive(on: queue).sink { [weak result] state in
             result?.state = state
@@ -123,7 +125,7 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
         return result
     }
     
-    public func substore<SubState: StateType>(_ keyPath: KeyPath<S, SubState?>, isSubscribing: Bool = true) -> Store<SubState>? {
+    public func substore<SubState: StateType>(_ keyPath: KeyPath<S, SubState?>, isSubscribing: Bool = true, isEqual: ((SubState, SubState) -> Bool)? = .none) -> Store<SubState>? {
         guard let subState = state[keyPath: keyPath] else { return .none }
         
         if let store = substores[keyPath]?.store as? Store<SubState> {
@@ -133,6 +135,7 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
         let result = Store<SubState>(reducer: { _, _ in fatalError() }, state: subState, queue: queue)
         result.parent = AnyStore(self)
         result.isSubscribing = isSubscribing
+        result.isEqualState = isEqual
         
         $state.map(keyPath).receive(on: queue).sink { [weak self, weak result] state in
             guard let state = state else {
