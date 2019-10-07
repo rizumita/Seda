@@ -9,8 +9,7 @@ import SwiftUI
 import Seda
 
 struct CountHistoryView: StatefulView {
-    @EnvironmentObject var store: Store<AppState>
-    var stateKeyPath: KeyPath<AppState, CounterState> = \.counterState
+    @EnvironmentObject var store: Store<CounterState>
 
     var body: some View {
         List {
@@ -21,11 +20,17 @@ struct CountHistoryView: StatefulView {
                 self.store.dispatch(CountAction.remove(indexSet))
             }
         }
+        .onAppear {
+            self.store.subscribe()
+        }
+        .onDisappear {
+            self.store.unsubscribe()
+        }
     }
 }
 
 struct CountHistoryView_Previews: PreviewProvider {
     static var previews: some View {
-        CountHistoryView()
+        CountHistoryView().environmentObject(Store(reducer: { _, _ in fatalError() }, state: CounterState()))
     }
 }
