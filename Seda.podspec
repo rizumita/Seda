@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "Seda"
-  spec.version      = "0.1.1"
+  spec.version      = "0.1.2"
   spec.summary      = "Seda is a Redux + Command architecture framework for SwiftUI and UIKit."
 
   # This description is used to generate tags and improve search results.
