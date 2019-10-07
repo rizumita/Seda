@@ -45,7 +45,7 @@ struct CounterView: StatefulView {
 
                 Spacer()
 
-                NavigationLink(destination: CountHistoryView()) {
+                NavigationLink(destination: CountHistoryView().environmentObject(self.store.substore(\.counterState, isSubscribing: false))) {
                     Text("Show history by nav")
                 }
                 
@@ -60,17 +60,18 @@ struct CounterView: StatefulView {
                 Spacer()
                 
                 Button(action: {
-                    self.store.dispatch(OptAction.start("Optional state view text field"))
+                    self.store.unsubscribe()
+                    return self.store.dispatch(OptAction.start("Optional state view text field"))
                 }) {
                     Text("Optional state view")
                 }
             }
-        }
-        .sheet(isPresented: $isHistoryViewPresented) {
-            CountHistoryView().environmentObject(self.store)
-        }
-        .sheet(item: store.substoreBinding(\.counterState.optState, dismissAction: OptAction.finish)) {
-            OptView().environmentObject($0)
+            .sheet(isPresented: $isHistoryViewPresented) {
+                CountHistoryView().environmentObject(self.store.substore(\.counterState))
+            }
+            .sheet(item: store.substoreBinding(\.counterState.optState, dismissAction: OptAction.finish), onDismiss: { self.store.subscribe() }) {
+                return OptView().environmentObject($0)
+            }
         }
     }
 }

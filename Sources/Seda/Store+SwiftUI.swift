@@ -54,7 +54,14 @@ extension Store {
                 self?.dispatch(unset)
         })
     }
-    
+
+    public func substoreBinding<SubState: StateType>(_ keyPath: KeyPath<S, SubState>) -> Binding<Store<SubState>> {
+        return Binding(get: { [weak self] in
+            guard let this = self else { fatalError() }
+            return this.substore(keyPath)
+        }) { _ in }
+    }
+
     public func substoreBinding<SubState: StateType>(_ keyPath: KeyPath<S, SubState?>, dismissAction: ActionType) -> Binding<Store<SubState>?> {        
         return Binding(get: { [weak self] in
             self?.substore(keyPath)

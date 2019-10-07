@@ -141,4 +141,30 @@ class StoreTests: XCTestCase {
         binding.wrappedValue = "second"
         XCTAssertEqual(nil, store.state.string)
     }
+    
+    func testSubscribeUnsubscribe() {
+        let store = Store(reducer: reducer(), state: TestState())
+        var cancellables = Set<AnyCancellable>()
+
+        store.unsubscribe()
+        
+        store.objectWillChange.sink { _ in
+            XCTFail()
+        }.store(in: &cancellables)
+        
+        store.dispatch(TestAction.up)
+        
+        cancellables = Set<AnyCancellable>()
+
+        let exp = expectation(description: #function)
+        
+        store.objectWillChange.sink { state in
+            XCTAssertEqual(1, state.count)
+            exp.fulfill()
+        }.store(in: &cancellables)
+        
+        store.subscribe()
+        
+        wait(for: [exp], timeout: 1.0)
+    }
 }

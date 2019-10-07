@@ -24,14 +24,10 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
                 isEqualState(state, newValue) {
                 return
             }
-            
-            let label = String(cString: __dispatch_queue_get_label(.none), encoding: .utf8)
-            
-            if label == DispatchQueue.main.label {
-                objectWillChange.send(newValue)
-            } else {
-                DispatchQueue.main.async { [weak self] in
-                    self?.objectWillChange.send(newValue)
+
+            if isSubscribing {
+                runOnQueue {
+                    self.objectWillChange.send(newValue)
                 }
             }
         }
@@ -39,6 +35,7 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
     private let queue: DispatchQueue
     private var parent: AnyStore?
     private var substores = [AnyKeyPath : AnyStore]()
+    private var isSubscribing: Bool = true
 
     public init(reducer: @escaping Reducer<S>,
                 stateInit: () -> (S, Command),
@@ -64,6 +61,36 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
         self.queue = queue
     }
     
+    private func runOnQueue(_ f: @escaping () -> ()) {
+        let label = String(cString: __dispatch_queue_get_label(.none), encoding: .utf8)
+        
+        if label == queue.label {
+            f()
+        } else {
+            queue.async {
+                f()
+            }
+        }
+    }
+    
+    public func subscribe() {
+        guard !isSubscribing else { return }
+        
+        runOnQueue {
+            self.isSubscribing = true
+            self.objectWillChange.send(self.state)
+        }
+    }
+    
+    public func unsubscribe() {
+        guard isSubscribing else { return }
+        
+        runOnQueue {
+            self.isSubscribing = false
+            self.objectWillChange.send(self.state)
+        }
+    }
+    
     public func dispatch(_ action: ActionType) {
         dispatchBase(action)
     }
@@ -72,31 +99,22 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
         if let parent = parent {
             parent.dispatch(action)
         } else {
-            let label = String(cString: __dispatch_queue_get_label(.none), encoding: .utf8)
-            let d: () -> () = { [weak self] in
-                guard let `self` = self else { return }
+            runOnQueue {
                 let (newState, command) = self.reducer(action, self.state)
                 self.state = newState
                 command.dispatch(self.dispatchBase)
             }
-            
-            if queue.label == label {
-                d()
-            } else {
-                queue.async {
-                    d()
-                }
-            }
         }
     }
     
-    public func substore<SubState: StateType>(_ keyPath: KeyPath<S, SubState>) -> Store<SubState> {
+    public func substore<SubState: StateType>(_ keyPath: KeyPath<S, SubState>, isSubscribing: Bool = true) -> Store<SubState> {
         if let store = substores[keyPath]?.store as? Store<SubState> {
             return store
         }
         
         let result = Store<SubState>(reducer: { _, _ in fatalError() }, state: state[keyPath: keyPath], queue: queue)
         result.parent = AnyStore(self)
+        result.isSubscribing = isSubscribing
         
         $state.map(keyPath).receive(on: queue).sink { [weak result] state in
             result?.state = state
@@ -105,7 +123,7 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
         return result
     }
     
-    public func substore<SubState: StateType>(_ keyPath: KeyPath<S, SubState?>) -> Store<SubState>? {
+    public func substore<SubState: StateType>(_ keyPath: KeyPath<S, SubState?>, isSubscribing: Bool = true) -> Store<SubState>? {
         guard let subState = state[keyPath: keyPath] else { return .none }
         
         if let store = substores[keyPath]?.store as? Store<SubState> {
@@ -114,6 +132,7 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
         
         let result = Store<SubState>(reducer: { _, _ in fatalError() }, state: subState, queue: queue)
         result.parent = AnyStore(self)
+        result.isSubscribing = isSubscribing
         
         $state.map(keyPath).receive(on: queue).sink { [weak self, weak result] state in
             guard let state = state else {

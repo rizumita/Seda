@@ -13,4 +13,10 @@ struct CounterState: StateType {
     var history: [Step] = []
     
     var optState: OptState?
+    
+    static func ==(lhs: Self, rhs: Self) -> Bool {
+        if lhs.count != rhs.count { return false }
+        if lhs.history != rhs.history { return false }
+        return true
+    }
 }

@@ -10,9 +10,23 @@ import Seda
 
 struct OptView: StatefulView {
     @EnvironmentObject var store: Store<OptState>
-    
+
     var body: some View {
-        TextField("Text", text: self.binding(\.text, set: OptAction.setText))
+        VStack {
+            Spacer()
+
+            TextField("Text", text: self.binding(\.text, set: OptAction.setText))
+
+            Spacer()
+
+            Button(action: {
+                self.store.dispatch(CountAction.step(.up))
+            }) {
+                Text("Up")
+            }
+
+            Spacer()
+        }
     }
 }
 
