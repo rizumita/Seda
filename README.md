@@ -41,6 +41,16 @@ The Command manages async and side effect tasks. The tasks wrapped by the comman
 
 On Xcode, select 'File' menu -> 'Swift Packages' -> 'Add Package Dependency...'.
 
+### CocoaPods
+
+In Podfile,
+
+```
+pod 'Seda', '~> 0.1'
+```
+
+And execute `pod install`.
+
 ## How to use
 
 Essentially, Seda is almost Redux.
