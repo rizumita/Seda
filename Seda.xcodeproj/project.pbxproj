@@ -68,6 +68,7 @@
 		6ADE99AD23272BBE00463CEF /* Seda.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = "Seda::Seda::Product" /* Seda.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6ADE99B223272D0B00463CEF /* CountHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE99B123272D0B00463CEF /* CountHistoryViewController.swift */; };
 		6ADE99B423272D1D00463CEF /* CountHistory.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6ADE99B323272D1D00463CEF /* CountHistory.storyboard */; };
+		6AF71A9E234C5540003BBA95 /* Middleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF71A9D234C5540003BBA95 /* Middleware.swift */; };
 		OBJ_30 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
 		OBJ_42 /* XCTestManifests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* XCTestManifests.swift */; };
 		OBJ_44 /* Seda.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "Seda::Seda::Product" /* Seda.framework */; };
@@ -168,6 +169,7 @@
 		6ADE99A22327293700463CEF /* Store+SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Store+SwiftUI.swift"; sourceTree = "<group>"; };
 		6ADE99B123272D0B00463CEF /* CountHistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountHistoryViewController.swift; sourceTree = "<group>"; };
 		6ADE99B323272D1D00463CEF /* CountHistory.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CountHistory.storyboard; sourceTree = "<group>"; };
+		6AF71A9D234C5540003BBA95 /* Middleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Middleware.swift; sourceTree = "<group>"; };
 		OBJ_13 /* XCTestManifests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTestManifests.swift; sourceTree = "<group>"; };
 		OBJ_17 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 				6ADE991A2325B30B00463CEF /* Reducer.swift */,
 				6ADE991C2325B37700463CEF /* StatefulView.swift */,
 				6AC812A72331B5AB00F63FCA /* DependsOn.swift */,
+				6AF71A9D234C5540003BBA95 /* Middleware.swift */,
 			);
 			name = Seda;
 			path = Sources/Seda;
@@ -578,6 +581,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				6AF71A9E234C5540003BBA95 /* Middleware.swift in Sources */,
 				6A1A059E23483C4400C9644A /* StatefulView.swift in Sources */,
 				6ADE99132325B14200463CEF /* Store.swift in Sources */,
 				6AC812A82331B5AB00F63FCA /* DependsOn.swift in Sources */,

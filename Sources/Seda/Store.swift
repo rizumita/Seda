@@ -30,6 +30,7 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
     }
 
     private let reducer: Reducer<S>
+    private let middlewares: [Middleware<S>]
     private let queue: DispatchQueue
     private var parent: AnyStore?
     private var isEqualState: ((S, S) -> Bool)?
@@ -41,12 +42,14 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
     public init(reducer: @escaping Reducer<S>,
                 stateInit: () -> (S, Command),
                 isEqual: ((S, S) -> Bool)? = .none,
+                middlewares: [Middleware<S>] = [],
                 queue: DispatchQueue = .main) {
         let (state, command) = stateInit()
         
         self.reducer = reducer
         self.state = state
         self.isEqualState = isEqual
+        self.middlewares = middlewares
         self.queue = queue
         
         command.dispatch(self.dispatchBase)
@@ -55,10 +58,13 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
     public init(reducer: @escaping Reducer<S>,
                 state: S,
                 isEqual: ((S, S) -> Bool)? = .none,
+                middlewares: [Middleware<S>] = [],
                 queue: DispatchQueue = .main) {
         self.reducer = reducer
         self.state = state
+        self.middlewares = middlewares
         self.isEqualState = isEqual
+        
         self.queue = queue
     }
     
@@ -68,7 +74,7 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
         if label == queue.label {
             f()
         } else {
-            queue.async {
+            queue.sync {
                 f()
             }
         }
@@ -100,11 +106,17 @@ public class Store<S>: ObservableObject, Identifiable where S: StateType {
         if let parent = parent {
             parent.dispatch(action)
         } else {
-            runOnQueue {
-                let (newState, command) = self.reducer(action, self.state)
-                self.state = newState
-                command.dispatch(self.dispatchBase)
-            }
+            self.middlewares.reversed().reduce({ action in self._dispatchBase(action) }) { dispatch, middleware in
+                middleware(self._dispatchBase, { self.state })(dispatch)
+            }(action)
+        }
+    }
+    
+    private func _dispatchBase(_ action: BaseActionType) {
+        runOnQueue {
+            let (newState, command) = self.reducer(action, self.state)
+            self.state = newState
+            command.dispatch(self.dispatchBase)
         }
     }
     
