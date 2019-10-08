@@ -167,4 +167,21 @@ class StoreTests: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
     }
+    
+    func testMiddlewares() {
+        let upMiddleware: Middleware<TestState> = { dispatch, getState in
+            return { next in
+                return { action in
+                    XCTAssertEqual(getState().count, 0)
+                    dispatch(TestAction.up)
+                    XCTAssertEqual(getState().count, 1)
+
+                    return next(action)
+                }
+            }
+        }
+
+        let store = Store(reducer: reducer(), stateInit: TestState.initialize, middlewares: [upMiddleware])
+        XCTAssertEqual(store.state.count, 2)
+    }
 }
