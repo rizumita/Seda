@@ -11,7 +11,7 @@ public typealias Dispatch = (BaseActionType) -> ()
 public typealias Sub = (@escaping Dispatch) -> ()
 
 public struct Command {
-    let value: [Sub]
+    var value: [Sub]
 
     public static var none: Command { return Command(value: []) }
 
@@ -71,5 +71,17 @@ public struct Command {
                 DispatchQueue.main.async { command.dispatch(dispatch) }
             }
         }])
+    }
+    
+    public mutating func append(action: BaseActionType) {
+        value += [{ dispatch in dispatch(action) }]
+    }
+    
+    public mutating func append(command: Command) {
+        value += command.value
+    }
+    
+    public static func +(lhs: Command, rhs: Command) -> Command {
+        Command(value: lhs.value + rhs.value)
     }
 }
