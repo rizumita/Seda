@@ -130,4 +130,54 @@ class CommandTests: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
     }
+    
+    func testAppendAction() {
+        var command = Command.ofAction(Action.up)
+        command.append(action: Action.down)
+        
+        var upCalled = false
+        var downCalled = false
+        
+        command.dispatch { action in
+            guard let action = action as? Action else { return }
+            upCalled = upCalled || action == Action.up
+            downCalled = downCalled || action == Action.down
+        }
+        
+        XCTAssertTrue(upCalled)
+        XCTAssertTrue(downCalled)
+    }
+    
+    func testAppendCommand() {
+        var command = Command.ofAction(Action.up)
+        command.append(command: .ofAction(Action.down))
+
+        var upCalled = false
+        var downCalled = false
+        
+        command.dispatch { action in
+            guard let action = action as? Action else { return }
+            upCalled = upCalled || action == Action.up
+            downCalled = downCalled || action == Action.down
+        }
+        
+        XCTAssertTrue(upCalled)
+        XCTAssertTrue(downCalled)
+    }
+    
+    func testAddOperator() {
+        let command = Command.ofAction(Action.up) + Command.ofAction(Action.down)
+        
+        var upCalled = false
+        var downCalled = false
+        
+        command.dispatch { action in
+            guard let action = action as? Action else { return }
+            upCalled = upCalled || action == Action.up
+            downCalled = downCalled || action == Action.down
+        }
+        
+        XCTAssertTrue(upCalled)
+        XCTAssertTrue(downCalled)
+    }
 }
